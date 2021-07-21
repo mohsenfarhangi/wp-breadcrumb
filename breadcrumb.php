@@ -66,15 +66,14 @@ function sardar_breadcrumbs() {
             echo $currentBefore;
             echo '<a href="' . get_post_type_archive_link( $post_type ) . '">' . $post_type_lable . '</a>';
             echo $currentAfter;
-            //category
-            $cat = get_the_category();
-            $cat = $cat[0] ?? 0;
-            if ( $cat != null ) {
-                echo $currentBefore;
-                echo get_category_parents( $cat, true, ' ' . $delimiter . ' ' );
-                echo $currentAfter;
-            }
-            $term = get_the_terms( $post->ID, 'product-category' );
+            
+            $post_taxonomy = get_post_taxonomies($post->ID);
+            if (is_product()) {
+                $term = get_the_terms($post->ID, 'product_cat');
+            } elseif (is_singular(['post'])) {
+                $term = get_the_terms($post->ID, 'category');
+            } else
+                $term = get_the_terms($post->ID, $post_taxonomy);
             $term = $term[0];
             if ( $term != null ) {
                 echo $currentBefore;
